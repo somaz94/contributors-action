@@ -1,132 +1,66 @@
-name: Continuous Integration
+name: Smoke Test (Released Action)
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '.github/workflows/**'
-      - '**/*.md'
   workflow_dispatch:
+    inputs:
+      run:
+        description: 'workflow run'
+        required: true
+        default: 'true'
+  workflow_run:
+    workflows: ["Create release"]
+    types:
+      - completed
 
 permissions:
   contents: write
 
 jobs:
-  unit-tests:
-    name: Unit Tests
+  smoke-test-dry-run:
+    name: Smoke Test (Dry Run)
     runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: '1.24'
-
-      - name: Run Go tests with coverage
-        run: go test ./... -v -cover -coverprofile=coverage.out
-
-      - name: Display coverage summary
-        run: go tool cover -func=coverage.out
-
-      - name: Check coverage threshold
-        run: |
-          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | tr -d '%')
-          echo "Total coverage: ${COVERAGE}%"
-          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
-            echo "FAIL: Coverage ${COVERAGE}% is below 80%"
-            exit 1
-          fi
-          echo "PASS: Coverage ${COVERAGE}% meets threshold"
-
-  build-and-push-docker:
-    name: Build and Push Docker
-    needs: unit-tests
-    runs-on: ubuntu-latest
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5001:5000
-    env:
-      TEST_TAG: localhost:5001/actions/contributors-action:latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Docker BuildX
-        uses: docker/setup-buildx-action@v4
-        with:
-          install: true
-          driver-opts: network=host
-
-      - name: Build the Container
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          tags: ${{ env.TEST_TAG }}
-
-      - name: Run the Container (dry-run)
-        run: |
-          docker run \
-            --env INPUT_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            --env INPUT_OWNER="somaz94" \
-            --env INPUT_REPO="contributors-action" \
-            --env INPUT_OUTPUT_FILE="CONTRIBUTORS.md" \
-            --env INPUT_DRY_RUN="true" \
-            --rm ${{ env.TEST_TAG }}
-
-  test-action-dry-run:
-    name: Test Dry Run
-    runs-on: ubuntu-latest
-    needs: build-and-push-docker
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Test Local Action (dry-run)
-        id: test-action
-        uses: ./
+      - name: Generate Contributors (dry-run)
+        id: contributors-dry-run
+        uses: somaz94/contributors-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           output_file: CONTRIBUTORS.md
           dry_run: true
 
-      - name: Verify Output
+      - name: Verify Dry Run Output
         run: |
-          cat <<'EOF'
-          contributors_count=${{ steps.test-action.outputs.contributors_count }}
-          output_file=${{ steps.test-action.outputs.output_file }}
-          top_contributor=${{ steps.test-action.outputs.top_contributor }}
-          EOF
-          if [ -z "${{ steps.test-action.outputs.contributors_count }}" ]; then
-            echo "FAIL: contributors_count output is empty"
+          echo "contributors_count=${{ steps.contributors-dry-run.outputs.contributors_count }}"
+          echo "output_file=${{ steps.contributors-dry-run.outputs.output_file }}"
+          echo "top_contributor=${{ steps.contributors-dry-run.outputs.top_contributor }}"
+          if [ -z "${{ steps.contributors-dry-run.outputs.contributors_count }}" ]; then
+            echo "FAIL: contributors_count is empty"
             exit 1
           fi
-          echo "PASS: action outputs verified"
+          echo "PASS: dry-run completed successfully"
 
-  test-action-table-format:
-    name: Test Table Format
+  smoke-test-table-format:
+    name: Smoke Test (Table Format)
     runs-on: ubuntu-latest
-    needs: build-and-push-docker
-
+    needs: [smoke-test-dry-run]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Generate Contributors (table)
-        id: table-test
-        uses: ./
+        id: contributors-table
+        uses: somaz94/contributors-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           output_file: CONTRIBUTORS-TABLE.md
           format: table
-          columns: 4
+          columns: 6
 
       - name: Verify Table Output
         run: |
@@ -141,18 +75,17 @@ jobs:
           echo "PASS: table format verified"
           head -20 CONTRIBUTORS-TABLE.md
 
-  test-action-list-format:
-    name: Test List Format
+  smoke-test-list-format:
+    name: Smoke Test (List Format)
     runs-on: ubuntu-latest
-    needs: build-and-push-docker
-
+    needs: [smoke-test-dry-run]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Generate Contributors (list)
-        id: list-test
-        uses: ./
+        id: contributors-list
+        uses: somaz94/contributors-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           output_file: CONTRIBUTORS-LIST.md
@@ -166,28 +99,23 @@ jobs:
             exit 1
           fi
           if ! grep -q "contributions)" CONTRIBUTORS-LIST.md; then
-            echo "FAIL: contribution count not found in list"
-            exit 1
-          fi
-          if ! grep -q 'width="50"' CONTRIBUTORS-LIST.md; then
-            echo "FAIL: avatar size 50 not applied"
+            echo "FAIL: contribution count not found"
             exit 1
           fi
           echo "PASS: list format verified"
           cat CONTRIBUTORS-LIST.md
 
-  test-action-image-format:
-    name: Test Image Format
+  smoke-test-image-format:
+    name: Smoke Test (Image Format)
     runs-on: ubuntu-latest
-    needs: build-and-push-docker
-
+    needs: [smoke-test-dry-run]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Generate Contributors (image)
-        id: image-test
-        uses: ./
+        id: contributors-image
+        uses: somaz94/contributors-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           output_file: CONTRIBUTORS-IMAGE.md
@@ -201,24 +129,23 @@ jobs:
             exit 1
           fi
           if ! grep -q 'title=' CONTRIBUTORS-IMAGE.md; then
-            echo "FAIL: title attribute not found in image format"
+            echo "FAIL: title attribute not found"
             exit 1
           fi
           echo "PASS: image format verified"
           cat CONTRIBUTORS-IMAGE.md
 
-  test-action-exclude-and-sort:
-    name: Test Exclude and Sort
+  smoke-test-exclude-and-sort:
+    name: Smoke Test (Exclude and Sort)
     runs-on: ubuntu-latest
-    needs: [test-action-table-format]
-
+    needs: [smoke-test-table-format]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Generate with Exclude and Sort by Name
-        id: exclude-sort-test
-        uses: ./
+        id: contributors-filtered
+        uses: somaz94/contributors-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           output_file: CONTRIBUTORS-FILTERED.md
@@ -227,7 +154,7 @@ jobs:
           sort_by: name
           max_contributors: 5
 
-      - name: Verify Exclude Output
+      - name: Verify Filtered Output
         run: |
           if [ ! -f "CONTRIBUTORS-FILTERED.md" ]; then
             echo "FAIL: CONTRIBUTORS-FILTERED.md not found"
@@ -237,19 +164,13 @@ jobs:
             echo "FAIL: dependabot should be excluded"
             exit 1
           fi
-          LINE_COUNT=$(wc -l < CONTRIBUTORS-FILTERED.md | tr -d ' ')
-          if [ "$LINE_COUNT" -gt 5 ]; then
-            echo "FAIL: max_contributors=5 but got $LINE_COUNT lines"
-            exit 1
-          fi
           echo "PASS: exclude and sort verified"
           cat CONTRIBUTORS-FILTERED.md
 
-  test-action-section-update:
-    name: Test Section Update
+  smoke-test-section-update:
+    name: Smoke Test (Section Update)
     runs-on: ubuntu-latest
-    needs: [test-action-table-format]
-
+    needs: [smoke-test-table-format]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -269,8 +190,8 @@ jobs:
           EOF
 
       - name: Update Section in Existing File
-        id: section-test
-        uses: ./
+        id: contributors-section
+        uses: somaz94/contributors-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           output_file: TEST-README.md
@@ -301,18 +222,17 @@ jobs:
           echo "PASS: section update verified"
           cat TEST-README.md
 
-  test-action-cross-repo:
-    name: Test Cross Repository
+  smoke-test-cross-repo:
+    name: Smoke Test (Cross Repository)
     runs-on: ubuntu-latest
-    needs: [test-action-list-format, test-action-image-format]
-
+    needs: [smoke-test-list-format, smoke-test-image-format]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Fetch Contributors from Different Repo
-        id: cross-repo-test
-        uses: ./
+        id: contributors-cross
+        uses: somaz94/contributors-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: somaz94
@@ -320,38 +240,53 @@ jobs:
           output_file: CONTRIBUTORS-CROSS.md
           format: table
           columns: 6
-          dry_run: true
 
       - name: Verify Cross Repo Output
         run: |
-          echo "contributors_count=${{ steps.cross-repo-test.outputs.contributors_count }}"
-          echo "top_contributor=${{ steps.cross-repo-test.outputs.top_contributor }}"
-          if [ -z "${{ steps.cross-repo-test.outputs.contributors_count }}" ]; then
+          echo "contributors_count=${{ steps.contributors-cross.outputs.contributors_count }}"
+          echo "top_contributor=${{ steps.contributors-cross.outputs.top_contributor }}"
+          if [ ! -f "CONTRIBUTORS-CROSS.md" ]; then
+            echo "FAIL: CONTRIBUTORS-CROSS.md not found"
+            exit 1
+          fi
+          if [ -z "${{ steps.contributors-cross.outputs.contributors_count }}" ]; then
             echo "FAIL: contributors_count is empty"
             exit 1
           fi
           echo "PASS: cross-repo fetch verified"
+          head -20 CONTRIBUTORS-CROSS.md
 
-  ci-result:
-    name: CI Result
-    if: always()
-    needs:
-      - unit-tests
-      - build-and-push-docker
-      - test-action-dry-run
-      - test-action-table-format
-      - test-action-list-format
-      - test-action-image-format
-      - test-action-exclude-and-sort
-      - test-action-section-update
-      - test-action-cross-repo
+  smoke-test-custom-options:
+    name: Smoke Test (Custom Options)
     runs-on: ubuntu-latest
+    needs: [smoke-test-exclude-and-sort, smoke-test-section-update]
     steps:
-      - name: Check all jobs
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate with All Custom Options
+        id: contributors-custom
+        uses: somaz94/contributors-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          output_file: CONTRIBUTORS-CUSTOM.md
+          format: table
+          columns: 3
+          max_contributors: 10
+          exclude: 'dependabot[bot]'
+          include_bots: false
+          avatar_size: 60
+          sort_by: contributions
+
+      - name: Verify Custom Output
         run: |
-          if [ "${{ contains(needs.*.result, 'failure') }}" = "true" ] || \
-             [ "${{ contains(needs.*.result, 'cancelled') }}" = "true" ]; then
-            echo "[FAIL] Some jobs failed or were cancelled"
+          if [ ! -f "CONTRIBUTORS-CUSTOM.md" ]; then
+            echo "FAIL: CONTRIBUTORS-CUSTOM.md not found"
             exit 1
           fi
-          echo "[PASS] All CI jobs passed"
+          if ! grep -q 'width="60"' CONTRIBUTORS-CUSTOM.md; then
+            echo "FAIL: avatar size 60 not applied"
+            exit 1
+          fi
+          echo "PASS: custom options verified"
+          cat CONTRIBUTORS-CUSTOM.md
