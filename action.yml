@@ -1,4 +1,4 @@
-name: Contributors Action
+name: Contributors Generator Action
 description: Generate and update contributors list from GitHub repository data
 author: somaz94
 
