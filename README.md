@@ -21,11 +21,7 @@ A GitHub Action that generates and updates a contributors list from GitHub repos
 
 <br/>
 
-## Usage
-
-<br/>
-
-### Basic
+## Quick Start
 
 ```yaml
 - name: Update Contributors
@@ -37,107 +33,66 @@ A GitHub Action that generates and updates a contributors list from GitHub repos
 
 <br/>
 
-### Update Section in README
+## Example Output
 
-```yaml
-- name: Update Contributors Section
-  uses: somaz94/contributors-action@v1
-  with:
-    token: ${{ secrets.GITHUB_TOKEN }}
-    output_file: README.md
-    update_section: true
-    section_start: '<!-- CONTRIBUTORS-START -->'
-    section_end: '<!-- CONTRIBUTORS-END -->'
-    columns: 6
-```
+### Table Format (default)
 
-<br/>
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/alice">
+        <img src="https://avatars.githubusercontent.com/u/1?v=4" width="100" alt="alice"/>
+        <br />
+        <sub><b>alice</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/bob">
+        <img src="https://avatars.githubusercontent.com/u/2?v=4" width="100" alt="bob"/>
+        <br />
+        <sub><b>bob</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/charlie">
+        <img src="https://avatars.githubusercontent.com/u/3?v=4" width="100" alt="charlie"/>
+        <br />
+        <sub><b>charlie</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
 
-### Custom Options
+### List Format
 
-```yaml
-- name: Generate Contributors List
-  uses: somaz94/contributors-action@v1
-  with:
-    token: ${{ secrets.GITHUB_TOKEN }}
-    output_file: CONTRIBUTORS.md
-    format: list
-    max_contributors: 20
-    exclude: 'dependabot[bot],renovate[bot]'
-    sort_by: contributions
-    avatar_size: 50
-```
+- [<img src="https://avatars.githubusercontent.com/u/1?v=4" width="50" alt="alice" /> alice](https://github.com/alice) (150 contributions)
+- [<img src="https://avatars.githubusercontent.com/u/2?v=4" width="50" alt="bob" /> bob](https://github.com/bob) (80 contributions)
 
-<br/>
+### Image Format
 
-## Inputs
-
-| Input | Default | Description |
-|---|---|---|
-| `token` | `${{ github.token }}` | GitHub token for API access |
-| `owner` | (current repo owner) | Repository owner |
-| `repo` | (current repo name) | Repository name |
-| `output_file` | `CONTRIBUTORS.md` | Output file path |
-| `format` | `table` | Output format: `table`, `list`, or `image` |
-| `columns` | `6` | Number of columns for table format |
-| `max_contributors` | `0` | Max contributors (0 = all) |
-| `exclude` | | Comma-separated usernames to exclude |
-| `include_bots` | `false` | Include bot accounts |
-| `avatar_size` | `100` | Avatar image size in pixels |
-| `sort_by` | `contributions` | Sort by: `contributions` or `name` |
-| `update_section` | `false` | Update section between markers in existing file |
-| `section_start` | `<!-- CONTRIBUTORS-START -->` | Start marker for section update |
-| `section_end` | `<!-- CONTRIBUTORS-END -->` | End marker for section update |
-| `dry_run` | `false` | Preview without writing to file |
+[<img src="https://avatars.githubusercontent.com/u/1?v=4" width="80" alt="alice" title="alice" />](https://github.com/alice)
+[<img src="https://avatars.githubusercontent.com/u/2?v=4" width="80" alt="bob" title="bob" />](https://github.com/bob)
+[<img src="https://avatars.githubusercontent.com/u/3?v=4" width="80" alt="charlie" title="charlie" />](https://github.com/charlie)
 
 <br/>
 
-## Outputs
+## Documentation
 
-| Output | Description |
+| Guide | Description |
 |---|---|
-| `contributors_count` | Number of contributors found |
-| `output_file` | Path to the generated/updated file |
-| `top_contributor` | Username of the top contributor |
-
-<br/>
-
-## Output Formats
-
-<br/>
-
-### Table (default)
-
-Generates an HTML table with avatars and profile links, arranged in the specified number of columns.
-
-<br/>
-
-### List
-
-Generates a Markdown list with avatar images, usernames, profile links, and contribution counts.
-
-<br/>
-
-### Image
-
-Generates a grid of clickable avatar images.
+| [Usage Guide](docs/usage-guide.md) | Detailed examples, workflow patterns, section update, cross-repo, dry run |
+| [Inputs & Outputs](docs/inputs-outputs.md) | Complete reference for all action inputs and outputs |
+| [Output Formats](docs/output-formats.md) | Format examples with generated code and rendered output |
 
 <br/>
 
 ## Local Development
 
 ```bash
-# Build
-make build
-
-# Test
-make test
-
-# Coverage
-make cover
-
-# Format
-make fmt
+make build    # Build the binary
+make test     # Run unit tests
+make cover    # Generate coverage report
+make fmt      # Format code
 ```
 
 <br/>
