@@ -24,7 +24,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.24'
+          go-version: '1.26'
 
       - name: Run Go tests with coverage
         run: go test ./... -v -cover -coverprofile=coverage.out
