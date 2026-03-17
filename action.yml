@@ -1,26 +1,97 @@
-name: The name of your action here
-description: Provide a description here
-author: Your name or organization here
+name: Contributors Action
+description: Generate and update contributors list from GitHub repository data
+author: somaz94
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: heart
-  color: red
+  icon: users
+  color: blue
 
-# Define your inputs here.
 inputs:
-  who-to-greet:
-    description: Your input description here
-    required: true
-    default: World
+  token:
+    description: 'GitHub token for API access'
+    required: false
+    default: ${{ github.token }}
+  owner:
+    description: 'Repository owner (default: current repository owner)'
+    required: false
+    default: ''
+  repo:
+    description: 'Repository name (default: current repository name)'
+    required: false
+    default: ''
+  output_file:
+    description: 'Output file path for the contributors list'
+    required: false
+    default: 'CONTRIBUTORS.md'
+  format:
+    description: 'Output format: table, list, or image'
+    required: false
+    default: 'table'
+  columns:
+    description: 'Number of columns for table format'
+    required: false
+    default: '6'
+  max_contributors:
+    description: 'Maximum number of contributors to include (0 = all)'
+    required: false
+    default: '0'
+  exclude:
+    description: 'Comma-separated list of usernames to exclude'
+    required: false
+    default: ''
+  include_bots:
+    description: 'Include bot accounts'
+    required: false
+    default: 'false'
+  avatar_size:
+    description: 'Avatar image size in pixels'
+    required: false
+    default: '100'
+  sort_by:
+    description: 'Sort by: contributions, name'
+    required: false
+    default: 'contributions'
+  update_section:
+    description: 'Update section between markers in existing file'
+    required: false
+    default: 'false'
+  section_start:
+    description: 'Start marker for section update'
+    required: false
+    default: '<!-- CONTRIBUTORS-START -->'
+  section_end:
+    description: 'End marker for section update'
+    required: false
+    default: '<!-- CONTRIBUTORS-END -->'
+  dry_run:
+    description: 'Preview output without writing to file'
+    required: false
+    default: 'false'
 
-# Define your outputs here.
 outputs:
-  greeting:
-    description: Your output description here
+  contributors_count:
+    description: 'Number of contributors found'
+  output_file:
+    description: 'Path to the generated/updated file'
+  top_contributor:
+    description: 'Username of the top contributor'
 
 runs:
   using: docker
   image: Dockerfile
   env:
-    INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
+    INPUT_TOKEN: ${{ inputs.token }}
+    INPUT_OWNER: ${{ inputs.owner }}
+    INPUT_REPO: ${{ inputs.repo }}
+    INPUT_OUTPUT_FILE: ${{ inputs.output_file }}
+    INPUT_FORMAT: ${{ inputs.format }}
+    INPUT_COLUMNS: ${{ inputs.columns }}
+    INPUT_MAX_CONTRIBUTORS: ${{ inputs.max_contributors }}
+    INPUT_EXCLUDE: ${{ inputs.exclude }}
+    INPUT_INCLUDE_BOTS: ${{ inputs.include_bots }}
+    INPUT_AVATAR_SIZE: ${{ inputs.avatar_size }}
+    INPUT_SORT_BY: ${{ inputs.sort_by }}
+    INPUT_UPDATE_SECTION: ${{ inputs.update_section }}
+    INPUT_SECTION_START: ${{ inputs.section_start }}
+    INPUT_SECTION_END: ${{ inputs.section_end }}
+    INPUT_DRY_RUN: ${{ inputs.dry_run }}
