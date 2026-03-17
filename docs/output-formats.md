@@ -1,6 +1,6 @@
 # Output Formats
 
-Contributors Action supports three output formats. Each example below shows the generated Markdown/HTML and how it renders.
+Contributors Action supports three output formats. Each example below shows the generated Markdown/HTML.
 
 <br/>
 
@@ -22,89 +22,47 @@ avatar_size: 100
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/alice">
-        <img src="https://avatars.githubusercontent.com/u/1?v=4" width="100" alt="alice"/>
+      <a href="https://github.com/user-a">
+        <img src="https://avatars.githubusercontent.com/u/...?v=4" width="100" alt="user-a"/>
         <br />
-        <sub><b>alice</b></sub>
+        <sub><b>user-a</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/bob">
-        <img src="https://avatars.githubusercontent.com/u/2?v=4" width="100" alt="bob"/>
+      <a href="https://github.com/user-b">
+        <img src="https://avatars.githubusercontent.com/u/...?v=4" width="100" alt="user-b"/>
         <br />
-        <sub><b>bob</b></sub>
+        <sub><b>user-b</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/charlie">
-        <img src="https://avatars.githubusercontent.com/u/3?v=4" width="100" alt="charlie"/>
+      <a href="https://github.com/user-c">
+        <img src="https://avatars.githubusercontent.com/u/...?v=4" width="100" alt="user-c"/>
         <br />
-        <sub><b>charlie</b></sub>
+        <sub><b>user-c</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/dave">
-        <img src="https://avatars.githubusercontent.com/u/4?v=4" width="100" alt="dave"/>
+      <a href="https://github.com/user-d">
+        <img src="https://avatars.githubusercontent.com/u/...?v=4" width="100" alt="user-d"/>
         <br />
-        <sub><b>dave</b></sub>
+        <sub><b>user-d</b></sub>
       </a>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <a href="https://github.com/eve">
-        <img src="https://avatars.githubusercontent.com/u/5?v=4" width="100" alt="eve"/>
+      <a href="https://github.com/user-e">
+        <img src="https://avatars.githubusercontent.com/u/...?v=4" width="100" alt="user-e"/>
         <br />
-        <sub><b>eve</b></sub>
+        <sub><b>user-e</b></sub>
       </a>
     </td>
   </tr>
 </table>
 ```
 
-**Rendered Output:**
-
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/alice">
-        <img src="https://avatars.githubusercontent.com/u/1?v=4" width="100" alt="alice"/>
-        <br />
-        <sub><b>alice</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/bob">
-        <img src="https://avatars.githubusercontent.com/u/2?v=4" width="100" alt="bob"/>
-        <br />
-        <sub><b>bob</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/charlie">
-        <img src="https://avatars.githubusercontent.com/u/3?v=4" width="100" alt="charlie"/>
-        <br />
-        <sub><b>charlie</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/dave">
-        <img src="https://avatars.githubusercontent.com/u/4?v=4" width="100" alt="dave"/>
-        <br />
-        <sub><b>dave</b></sub>
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/eve">
-        <img src="https://avatars.githubusercontent.com/u/5?v=4" width="100" alt="eve"/>
-        <br />
-        <sub><b>eve</b></sub>
-      </a>
-    </td>
-  </tr>
-</table>
+Each cell contains the contributor's avatar image, a link to their GitHub profile, and their username.
 
 <br/>
 
@@ -122,16 +80,12 @@ avatar_size: 50
 **Generated Markdown:**
 
 ```markdown
-- [<img src="https://avatars.githubusercontent.com/u/1?v=4" width="50" alt="alice" /> alice](https://github.com/alice) (150 contributions)
-- [<img src="https://avatars.githubusercontent.com/u/2?v=4" width="50" alt="bob" /> bob](https://github.com/bob) (80 contributions)
-- [<img src="https://avatars.githubusercontent.com/u/3?v=4" width="50" alt="charlie" /> charlie](https://github.com/charlie) (45 contributions)
+- [<img src="https://avatars.githubusercontent.com/u/...?v=4" width="50" alt="user-a" /> user-a](https://github.com/user-a) (150 contributions)
+- [<img src="https://avatars.githubusercontent.com/u/...?v=4" width="50" alt="user-b" /> user-b](https://github.com/user-b) (80 contributions)
+- [<img src="https://avatars.githubusercontent.com/u/...?v=4" width="50" alt="user-c" /> user-c](https://github.com/user-c) (45 contributions)
 ```
 
-**Rendered Output:**
-
-- [<img src="https://avatars.githubusercontent.com/u/1?v=4" width="50" alt="alice" /> alice](https://github.com/alice) (150 contributions)
-- [<img src="https://avatars.githubusercontent.com/u/2?v=4" width="50" alt="bob" /> bob](https://github.com/bob) (80 contributions)
-- [<img src="https://avatars.githubusercontent.com/u/3?v=4" width="50" alt="charlie" /> charlie](https://github.com/charlie) (45 contributions)
+Each item shows the avatar, username with profile link, and total contribution count.
 
 <br/>
 
@@ -149,16 +103,12 @@ avatar_size: 80
 **Generated Markdown:**
 
 ```markdown
-[<img src="https://avatars.githubusercontent.com/u/1?v=4" width="80" alt="alice" title="alice" />](https://github.com/alice)
-[<img src="https://avatars.githubusercontent.com/u/2?v=4" width="80" alt="bob" title="bob" />](https://github.com/bob)
-[<img src="https://avatars.githubusercontent.com/u/3?v=4" width="80" alt="charlie" title="charlie" />](https://github.com/charlie)
+[<img src="https://avatars.githubusercontent.com/u/...?v=4" width="80" alt="user-a" title="user-a" />](https://github.com/user-a)
+[<img src="https://avatars.githubusercontent.com/u/...?v=4" width="80" alt="user-b" title="user-b" />](https://github.com/user-b)
+[<img src="https://avatars.githubusercontent.com/u/...?v=4" width="80" alt="user-c" title="user-c" />](https://github.com/user-c)
 ```
 
-**Rendered Output:**
-
-[<img src="https://avatars.githubusercontent.com/u/1?v=4" width="80" alt="alice" title="alice" />](https://github.com/alice)
-[<img src="https://avatars.githubusercontent.com/u/2?v=4" width="80" alt="bob" title="bob" />](https://github.com/bob)
-[<img src="https://avatars.githubusercontent.com/u/3?v=4" width="80" alt="charlie" title="charlie" />](https://github.com/charlie)
+Avatars are displayed inline. Hovering shows the username as a tooltip, and clicking links to the profile.
 
 <br/>
 
@@ -191,17 +141,17 @@ MIT
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/alice">
-        <img src="https://avatars.githubusercontent.com/u/1?v=4" width="100" alt="alice"/>
+      <a href="https://github.com/user-a">
+        <img src="https://avatars.githubusercontent.com/u/...?v=4" width="100" alt="user-a"/>
         <br />
-        <sub><b>alice</b></sub>
+        <sub><b>user-a</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/bob">
-        <img src="https://avatars.githubusercontent.com/u/2?v=4" width="100" alt="bob"/>
+      <a href="https://github.com/user-b">
+        <img src="https://avatars.githubusercontent.com/u/...?v=4" width="100" alt="user-b"/>
         <br />
-        <sub><b>bob</b></sub>
+        <sub><b>user-b</b></sub>
       </a>
     </td>
   </tr>

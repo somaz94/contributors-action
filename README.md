@@ -37,42 +37,42 @@ A GitHub Action that generates and updates a contributors list from GitHub repos
 
 ### Table Format (default)
 
+```html
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/alice">
-        <img src="https://avatars.githubusercontent.com/u/1?v=4" width="100" alt="alice"/>
+      <a href="https://github.com/user-a">
+        <img src="https://avatars.githubusercontent.com/u/..." width="100" alt="user-a"/>
         <br />
-        <sub><b>alice</b></sub>
+        <sub><b>user-a</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/bob">
-        <img src="https://avatars.githubusercontent.com/u/2?v=4" width="100" alt="bob"/>
+      <a href="https://github.com/user-b">
+        <img src="https://avatars.githubusercontent.com/u/..." width="100" alt="user-b"/>
         <br />
-        <sub><b>bob</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/charlie">
-        <img src="https://avatars.githubusercontent.com/u/3?v=4" width="100" alt="charlie"/>
-        <br />
-        <sub><b>charlie</b></sub>
+        <sub><b>user-b</b></sub>
       </a>
     </td>
   </tr>
 </table>
+```
 
 ### List Format
 
-- [<img src="https://avatars.githubusercontent.com/u/1?v=4" width="50" alt="alice" /> alice](https://github.com/alice) (150 contributions)
-- [<img src="https://avatars.githubusercontent.com/u/2?v=4" width="50" alt="bob" /> bob](https://github.com/bob) (80 contributions)
+```markdown
+- [<img src="..." width="50" alt="user-a" /> user-a](https://github.com/user-a) (150 contributions)
+- [<img src="..." width="50" alt="user-b" /> user-b](https://github.com/user-b) (80 contributions)
+```
 
 ### Image Format
 
-[<img src="https://avatars.githubusercontent.com/u/1?v=4" width="80" alt="alice" title="alice" />](https://github.com/alice)
-[<img src="https://avatars.githubusercontent.com/u/2?v=4" width="80" alt="bob" title="bob" />](https://github.com/bob)
-[<img src="https://avatars.githubusercontent.com/u/3?v=4" width="80" alt="charlie" title="charlie" />](https://github.com/charlie)
+```markdown
+[<img src="..." width="80" alt="user-a" title="user-a" />](https://github.com/user-a)
+[<img src="..." width="80" alt="user-b" title="user-b" />](https://github.com/user-b)
+```
+
+See [Output Formats](docs/output-formats.md) for detailed examples.
 
 <br/>
 
