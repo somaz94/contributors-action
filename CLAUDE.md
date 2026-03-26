@@ -2,10 +2,6 @@
 
 <br/>
 
-- Do not include `Co-Authored-By` lines in commit messages.
-- Do not push to remote. Only commit. The user will push manually.
-- Do not modify git config.
-
 <br/>
 
 ## Project Structure
@@ -52,6 +48,3 @@ Key inputs: `token`, `output_file`, `format` (table/list/image), `columns`, `max
 - Docker: multi-stage build (golang:1.26-alpine → alpine:3.23)
 
 <br/>
-
-- Communicate with the user in Korean.
-- All documentation and code comments must be written in English.
