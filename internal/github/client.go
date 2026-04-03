@@ -5,9 +5,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
-const apiBaseURL = "https://api.github.com"
+const (
+	apiBaseURL         = "https://api.github.com"
+	defaultHTTPTimeout = 30 * time.Second
+)
 
 // Client is a GitHub API client.
 type Client struct {
@@ -20,7 +24,7 @@ type Client struct {
 func NewClient(token string) *Client {
 	return &Client{
 		token:      token,
-		httpClient: &http.Client{},
+		httpClient: &http.Client{Timeout: defaultHTTPTimeout},
 		baseURL:    apiBaseURL,
 	}
 }
@@ -29,7 +33,7 @@ func NewClient(token string) *Client {
 func NewClientWithBaseURL(token, baseURL string) *Client {
 	return &Client{
 		token:      token,
-		httpClient: &http.Client{},
+		httpClient: &http.Client{Timeout: defaultHTTPTimeout},
 		baseURL:    baseURL,
 	}
 }
@@ -81,13 +85,7 @@ func (c *Client) FetchContributors(owner, repo string, includeBots bool) ([]Cont
 	}
 
 	if !includeBots {
-		filtered := make([]Contributor, 0, len(allContributors))
-		for _, c := range allContributors {
-			if c.Type != "Bot" {
-				filtered = append(filtered, c)
-			}
-		}
-		allContributors = filtered
+		allContributors = FilterBots(allContributors)
 	}
 
 	return allContributors, nil

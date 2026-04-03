@@ -35,13 +35,13 @@ func formatTable(contributors []github.Contributor, columns, avatarSize int) str
 			}
 			sb.WriteString("  <tr>\n")
 		}
-		sb.WriteString(fmt.Sprintf("    <td align=\"center\">\n"))
+		sb.WriteString("    <td align=\"center\">\n")
 		sb.WriteString(fmt.Sprintf("      <a href=\"%s\">\n", c.HTMLURL))
 		sb.WriteString(fmt.Sprintf("        <img src=\"%s\" width=\"%d\" alt=\"%s\"/>\n", c.AvatarURL, avatarSize, c.Login))
-		sb.WriteString(fmt.Sprintf("        <br />\n"))
+		sb.WriteString("        <br />\n")
 		sb.WriteString(fmt.Sprintf("        <sub><b>%s</b></sub>\n", c.Login))
-		sb.WriteString(fmt.Sprintf("      </a>\n"))
-		sb.WriteString(fmt.Sprintf("    </td>\n"))
+		sb.WriteString("      </a>\n")
+		sb.WriteString("    </td>\n")
 	}
 
 	sb.WriteString("  </tr>\n")

@@ -31,6 +31,29 @@ func TestFilterEmpty(t *testing.T) {
 	}
 }
 
+func TestFilterBots(t *testing.T) {
+	contributors := []Contributor{
+		{Login: "alice", Type: "User", Contributions: 100},
+		{Login: "ci-bot", Type: "Bot", Contributions: 30},
+		{Login: "bob", Type: "User", Contributions: 50},
+	}
+
+	result := FilterBots(contributors)
+	if len(result) != 2 {
+		t.Fatalf("expected 2 contributors, got %d", len(result))
+	}
+	if result[0].Login != "alice" || result[1].Login != "bob" {
+		t.Errorf("unexpected result: %v", result)
+	}
+}
+
+func TestFilterBotsEmpty(t *testing.T) {
+	result := FilterBots(nil)
+	if len(result) != 0 {
+		t.Fatalf("expected 0 contributors, got %d", len(result))
+	}
+}
+
 func TestSortByContributions(t *testing.T) {
 	contributors := []Contributor{
 		{Login: "bob", Contributions: 50},

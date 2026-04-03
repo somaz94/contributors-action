@@ -1,32 +1,23 @@
 package config
 
 import (
-	"os"
+	"strings"
 	"testing"
 )
 
 func TestLoad(t *testing.T) {
-	os.Setenv("GITHUB_REPOSITORY", "somaz94/contributors-action")
-	os.Setenv("INPUT_TOKEN", "test-token")
-	os.Setenv("INPUT_OUTPUT_FILE", "CONTRIBUTORS.md")
-	os.Setenv("INPUT_FORMAT", "table")
-	os.Setenv("INPUT_COLUMNS", "6")
-	os.Setenv("INPUT_MAX_CONTRIBUTORS", "10")
-	os.Setenv("INPUT_EXCLUDE", "bot1,bot2")
-	os.Setenv("INPUT_INCLUDE_BOTS", "false")
-	os.Setenv("INPUT_AVATAR_SIZE", "100")
-	os.Setenv("INPUT_SORT_BY", "contributions")
-	os.Setenv("INPUT_UPDATE_SECTION", "false")
-	os.Setenv("INPUT_DRY_RUN", "true")
-	defer func() {
-		for _, key := range []string{
-			"GITHUB_REPOSITORY", "INPUT_TOKEN", "INPUT_OUTPUT_FILE", "INPUT_FORMAT",
-			"INPUT_COLUMNS", "INPUT_MAX_CONTRIBUTORS", "INPUT_EXCLUDE", "INPUT_INCLUDE_BOTS",
-			"INPUT_AVATAR_SIZE", "INPUT_SORT_BY", "INPUT_UPDATE_SECTION", "INPUT_DRY_RUN",
-		} {
-			os.Unsetenv(key)
-		}
-	}()
+	t.Setenv("GITHUB_REPOSITORY", "somaz94/contributors-action")
+	t.Setenv("INPUT_TOKEN", "test-token")
+	t.Setenv("INPUT_OUTPUT_FILE", "CONTRIBUTORS.md")
+	t.Setenv("INPUT_FORMAT", "table")
+	t.Setenv("INPUT_COLUMNS", "6")
+	t.Setenv("INPUT_MAX_CONTRIBUTORS", "10")
+	t.Setenv("INPUT_EXCLUDE", "bot1,bot2")
+	t.Setenv("INPUT_INCLUDE_BOTS", "false")
+	t.Setenv("INPUT_AVATAR_SIZE", "100")
+	t.Setenv("INPUT_SORT_BY", "contributions")
+	t.Setenv("INPUT_UPDATE_SECTION", "false")
+	t.Setenv("INPUT_DRY_RUN", "true")
 
 	cfg, err := Load()
 	if err != nil {
@@ -51,9 +42,9 @@ func TestLoad(t *testing.T) {
 }
 
 func TestLoadMissingRepository(t *testing.T) {
-	os.Unsetenv("GITHUB_REPOSITORY")
-	os.Unsetenv("INPUT_OWNER")
-	os.Unsetenv("INPUT_REPO")
+	t.Setenv("GITHUB_REPOSITORY", "")
+	t.Setenv("INPUT_OWNER", "")
+	t.Setenv("INPUT_REPO", "")
 
 	_, err := Load()
 	if err == nil {
@@ -61,56 +52,42 @@ func TestLoadMissingRepository(t *testing.T) {
 	}
 }
 
-func TestLoadInvalidColumns(t *testing.T) {
-	os.Setenv("GITHUB_REPOSITORY", "somaz94/test")
-	os.Setenv("INPUT_COLUMNS", "abc")
-	defer func() {
-		os.Unsetenv("GITHUB_REPOSITORY")
-		os.Unsetenv("INPUT_COLUMNS")
-	}()
+func TestLoadParsing(t *testing.T) {
+	t.Run("InvalidColumns", func(t *testing.T) {
+		t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+		t.Setenv("INPUT_COLUMNS", "abc")
 
-	_, err := Load()
-	if err == nil {
-		t.Fatal("expected error for invalid columns")
-	}
-}
+		_, err := Load()
+		if err == nil {
+			t.Fatal("expected error for invalid columns")
+		}
+	})
 
-func TestLoadInvalidMaxContributors(t *testing.T) {
-	os.Setenv("GITHUB_REPOSITORY", "somaz94/test")
-	os.Setenv("INPUT_MAX_CONTRIBUTORS", "xyz")
-	defer func() {
-		os.Unsetenv("GITHUB_REPOSITORY")
-		os.Unsetenv("INPUT_MAX_CONTRIBUTORS")
-	}()
+	t.Run("InvalidMaxContributors", func(t *testing.T) {
+		t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+		t.Setenv("INPUT_MAX_CONTRIBUTORS", "xyz")
 
-	_, err := Load()
-	if err == nil {
-		t.Fatal("expected error for invalid max_contributors")
-	}
-}
+		_, err := Load()
+		if err == nil {
+			t.Fatal("expected error for invalid max_contributors")
+		}
+	})
 
-func TestLoadInvalidAvatarSize(t *testing.T) {
-	os.Setenv("GITHUB_REPOSITORY", "somaz94/test")
-	os.Setenv("INPUT_AVATAR_SIZE", "big")
-	defer func() {
-		os.Unsetenv("GITHUB_REPOSITORY")
-		os.Unsetenv("INPUT_AVATAR_SIZE")
-	}()
+	t.Run("InvalidAvatarSize", func(t *testing.T) {
+		t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+		t.Setenv("INPUT_AVATAR_SIZE", "big")
 
-	_, err := Load()
-	if err == nil {
-		t.Fatal("expected error for invalid avatar_size")
-	}
+		_, err := Load()
+		if err == nil {
+			t.Fatal("expected error for invalid avatar_size")
+		}
+	})
 }
 
 func TestLoadWithExplicitOwnerRepo(t *testing.T) {
-	os.Unsetenv("GITHUB_REPOSITORY")
-	os.Setenv("INPUT_OWNER", "custom-owner")
-	os.Setenv("INPUT_REPO", "custom-repo")
-	defer func() {
-		os.Unsetenv("INPUT_OWNER")
-		os.Unsetenv("INPUT_REPO")
-	}()
+	t.Setenv("GITHUB_REPOSITORY", "")
+	t.Setenv("INPUT_OWNER", "custom-owner")
+	t.Setenv("INPUT_REPO", "custom-repo")
 
 	cfg, err := Load()
 	if err != nil {
@@ -125,12 +102,8 @@ func TestLoadWithExplicitOwnerRepo(t *testing.T) {
 }
 
 func TestLoadExcludeWithSpaces(t *testing.T) {
-	os.Setenv("GITHUB_REPOSITORY", "somaz94/test")
-	os.Setenv("INPUT_EXCLUDE", " bot1 , bot2 , , bot3 ")
-	defer func() {
-		os.Unsetenv("GITHUB_REPOSITORY")
-		os.Unsetenv("INPUT_EXCLUDE")
-	}()
+	t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+	t.Setenv("INPUT_EXCLUDE", " bot1 , bot2 , , bot3 ")
 
 	cfg, err := Load()
 	if err != nil {
@@ -142,16 +115,10 @@ func TestLoadExcludeWithSpaces(t *testing.T) {
 }
 
 func TestLoadBooleanFields(t *testing.T) {
-	os.Setenv("GITHUB_REPOSITORY", "somaz94/test")
-	os.Setenv("INPUT_INCLUDE_BOTS", "true")
-	os.Setenv("INPUT_UPDATE_SECTION", "true")
-	os.Setenv("INPUT_DRY_RUN", "false")
-	defer func() {
-		os.Unsetenv("GITHUB_REPOSITORY")
-		os.Unsetenv("INPUT_INCLUDE_BOTS")
-		os.Unsetenv("INPUT_UPDATE_SECTION")
-		os.Unsetenv("INPUT_DRY_RUN")
-	}()
+	t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+	t.Setenv("INPUT_INCLUDE_BOTS", "true")
+	t.Setenv("INPUT_UPDATE_SECTION", "true")
+	t.Setenv("INPUT_DRY_RUN", "false")
 
 	cfg, err := Load()
 	if err != nil {
@@ -168,23 +135,79 @@ func TestLoadBooleanFields(t *testing.T) {
 	}
 }
 
+func TestLoadValidation(t *testing.T) {
+	t.Run("InvalidFormat", func(t *testing.T) {
+		t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+		t.Setenv("INPUT_FORMAT", "yaml")
+
+		_, err := Load()
+		if err == nil {
+			t.Fatal("expected error for invalid format")
+		}
+		if !strings.Contains(err.Error(), "invalid format") {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
+
+	t.Run("InvalidSortBy", func(t *testing.T) {
+		t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+		t.Setenv("INPUT_SORT_BY", "date")
+
+		_, err := Load()
+		if err == nil {
+			t.Fatal("expected error for invalid sort_by")
+		}
+		if !strings.Contains(err.Error(), "invalid sort_by") {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
+
+	t.Run("ColumnsZero", func(t *testing.T) {
+		t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+		t.Setenv("INPUT_COLUMNS", "0")
+
+		_, err := Load()
+		if err == nil {
+			t.Fatal("expected error for columns = 0")
+		}
+		if !strings.Contains(err.Error(), "columns must be >= 1") {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
+
+	t.Run("AvatarSizeZero", func(t *testing.T) {
+		t.Setenv("GITHUB_REPOSITORY", "somaz94/test")
+		t.Setenv("INPUT_AVATAR_SIZE", "0")
+
+		_, err := Load()
+		if err == nil {
+			t.Fatal("expected error for avatar_size = 0")
+		}
+		if !strings.Contains(err.Error(), "avatar_size must be >= 1") {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
+}
+
 func TestParseRepository(t *testing.T) {
 	tests := []struct {
+		name      string
 		input     string
 		wantOwner string
 		wantRepo  string
 	}{
-		{"somaz94/contributors-action", "somaz94", "contributors-action"},
-		{"", "", ""},
-		{"invalid", "", ""},
+		{"ValidRepo", "somaz94/contributors-action", "somaz94", "contributors-action"},
+		{"Empty", "", "", ""},
+		{"Invalid", "invalid", "", ""},
 	}
 
 	for _, tt := range tests {
-		os.Setenv("GITHUB_REPOSITORY", tt.input)
-		owner, repo := parseRepository()
-		if owner != tt.wantOwner || repo != tt.wantRepo {
-			t.Errorf("parseRepository(%q) = (%q, %q), want (%q, %q)", tt.input, owner, repo, tt.wantOwner, tt.wantRepo)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			t.Setenv("GITHUB_REPOSITORY", tt.input)
+			owner, repo := parseRepository()
+			if owner != tt.wantOwner || repo != tt.wantRepo {
+				t.Errorf("parseRepository(%q) = (%q, %q), want (%q, %q)", tt.input, owner, repo, tt.wantOwner, tt.wantRepo)
+			}
+		})
 	}
-	os.Unsetenv("GITHUB_REPOSITORY")
 }
