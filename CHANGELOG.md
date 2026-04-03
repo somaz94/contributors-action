@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.1.0](https://github.com/somaz94/contributors-action/compare/v1.0.0...v1.1.0) (2026-04-03)
+
+### Bug Fixes
+
+- rename action to Contributors Generator Action ([1dcdfd8](https://github.com/somaz94/contributors-action/commit/1dcdfd80fede8fdea7609ba9bf5b20e876ef264b))
+
+### Code Refactoring
+
+- improve code quality with validation, helpers, and test modernization ([d611667](https://github.com/somaz94/contributors-action/commit/d611667c0d659dc8f747b057384be597395bb5b7))
+
+### Documentation
+
+- remove duplicate rules covered by global CLAUDE.md ([c65d998](https://github.com/somaz94/contributors-action/commit/c65d998c511624027a4d1523dc991142a6f97b25))
+- add no-push rule to CLAUDE.md ([6e533e1](https://github.com/somaz94/contributors-action/commit/6e533e17307106083703aa6bb7d1ee44498fee05))
+- add CLAUDE.md project guide ([a74bf7c](https://github.com/somaz94/contributors-action/commit/a74bf7c486ae8a56878d7d4c37294bcc485f479f))
+
+### Continuous Integration
+
+- skip auto-generated changelog and contributors commits in release notes ([fccd17a](https://github.com/somaz94/contributors-action/commit/fccd17a41b127424f4014c2555eb5d43d0ffd8e4))
+- revert to body_path RELEASE.md in release workflow ([ddd5eca](https://github.com/somaz94/contributors-action/commit/ddd5eca3f5f379984dbf6b035d7673b80204532f))
+- use generate_release_notes instead of body_path in release workflow ([6d19f1e](https://github.com/somaz94/contributors-action/commit/6d19f1e124dafd62ff86c2ad315a4dd0a55854f6))
+- migrate gitlab-mirror workflow to multi-git-mirror action ([67c625f](https://github.com/somaz94/contributors-action/commit/67c625f11be382acb7a4afdbf314ee53f98bd3ce))
+
+### Chores
+
+- remove duplicate rules from CLAUDE.md (moved to global) ([180eca3](https://github.com/somaz94/contributors-action/commit/180eca3077a6c2027e0985e50a92eed4115bf9b1))
+- add git config protection to CLAUDE.md ([15857ab](https://github.com/somaz94/contributors-action/commit/15857ab701d1b6747c26a096388d218bdc6e4651))
+
+### Contributors
+
+- somaz
+
+<br/>
+
 ## [v1.0.0](https://github.com/somaz94/contributors-action/releases/tag/v1.0.0) (2026-03-17)
 
 ### Features
@@ -31,7 +65,6 @@ All notable changes to this project will be documented in this file.
 
 ### Contributors
 
-- dependabot[bot]
 - somaz
 
 <br/>
