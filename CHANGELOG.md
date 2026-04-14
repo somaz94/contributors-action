@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Chores
 
+- **deps:** bump softprops/action-gh-release from 2 to 3 ([679e9a0](https://github.com/somaz94/contributors-action/commit/679e9a00029827d324cd8521020ec5547b9f16d5))
 - **deps:** bump actions/github-script from 8 to 9 ([b83a411](https://github.com/somaz94/contributors-action/commit/b83a41192af05617f6d8e16af389bed6b3016a7f))
 - **deps:** bump dependabot/fetch-metadata from 2 to 3 ([616d4cd](https://github.com/somaz94/contributors-action/commit/616d4cdfae55eae61d2c5b0bc719d120f384e883))
 
