@@ -11,12 +11,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   ci-prelude:
     name: Unit Tests + Docker Build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     services:
       registry:
         image: registry:2
@@ -33,20 +38,28 @@ jobs:
           coverage_threshold: '80'
           manage_registry: 'false'
 
+      # Skip on fork PRs: passing GITHUB_TOKEN to attacker-controlled code is unsafe.
       - name: Run the Container (dry-run)
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_REF: ${{ steps.ci.outputs.image_ref }}
         run: |
+          set -euo pipefail
           docker run \
-            --env INPUT_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+            --env INPUT_TOKEN="$INPUT_TOKEN" \
             --env INPUT_OWNER="somaz94" \
             --env INPUT_REPO="contributors-action" \
             --env INPUT_OUTPUT_FILE="CONTRIBUTORS.md" \
             --env INPUT_DRY_RUN="true" \
-            --rm "${{ steps.ci.outputs.image_ref }}"
+            --rm "$IMAGE_REF"
 
   test-action-dry-run:
     name: Test Dry Run
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: ci-prelude
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Checkout
@@ -61,13 +74,18 @@ jobs:
           dry_run: true
 
       - name: Verify Output
+        env:
+          CONTRIBUTORS_COUNT: ${{ steps.test-action.outputs.contributors_count }}
+          OUTPUT_FILE: ${{ steps.test-action.outputs.output_file }}
+          TOP_CONTRIBUTOR: ${{ steps.test-action.outputs.top_contributor }}
         run: |
-          cat <<'EOF'
-          contributors_count=${{ steps.test-action.outputs.contributors_count }}
-          output_file=${{ steps.test-action.outputs.output_file }}
-          top_contributor=${{ steps.test-action.outputs.top_contributor }}
+          set -euo pipefail
+          cat <<EOF
+          contributors_count=$CONTRIBUTORS_COUNT
+          output_file=$OUTPUT_FILE
+          top_contributor=$TOP_CONTRIBUTOR
           EOF
-          if [ -z "${{ steps.test-action.outputs.contributors_count }}" ]; then
+          if [ -z "$CONTRIBUTORS_COUNT" ]; then
             echo "FAIL: contributors_count output is empty"
             exit 1
           fi
@@ -76,7 +94,9 @@ jobs:
   test-action-table-format:
     name: Test Table Format
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: ci-prelude
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Checkout
@@ -93,6 +113,7 @@ jobs:
 
       - name: Verify Table Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-TABLE.md" ]; then
             echo "FAIL: CONTRIBUTORS-TABLE.md not found"
             exit 1
@@ -107,7 +128,9 @@ jobs:
   test-action-list-format:
     name: Test List Format
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: ci-prelude
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Checkout
@@ -124,6 +147,7 @@ jobs:
 
       - name: Verify List Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-LIST.md" ]; then
             echo "FAIL: CONTRIBUTORS-LIST.md not found"
             exit 1
@@ -142,7 +166,9 @@ jobs:
   test-action-image-format:
     name: Test Image Format
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: ci-prelude
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Checkout
@@ -159,6 +185,7 @@ jobs:
 
       - name: Verify Image Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-IMAGE.md" ]; then
             echo "FAIL: CONTRIBUTORS-IMAGE.md not found"
             exit 1
@@ -173,7 +200,9 @@ jobs:
   test-action-exclude-and-sort:
     name: Test Exclude and Sort
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [test-action-table-format]
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Checkout
@@ -192,6 +221,7 @@ jobs:
 
       - name: Verify Exclude Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-FILTERED.md" ]; then
             echo "FAIL: CONTRIBUTORS-FILTERED.md not found"
             exit 1
@@ -211,7 +241,9 @@ jobs:
   test-action-section-update:
     name: Test Section Update
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [test-action-table-format]
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Checkout
@@ -219,6 +251,7 @@ jobs:
 
       - name: Create test file with markers
         run: |
+          set -euo pipefail
           cat > TEST-README.md <<'EOF'
           # My Project
 
@@ -245,6 +278,7 @@ jobs:
 
       - name: Verify Section Update
         run: |
+          set -euo pipefail
           if ! grep -q "<!-- CONTRIBUTORS-START -->" TEST-README.md; then
             echo "FAIL: start marker missing"
             exit 1
@@ -267,7 +301,9 @@ jobs:
   test-action-cross-repo:
     name: Test Cross Repository
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [test-action-list-format, test-action-image-format]
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Checkout
@@ -286,10 +322,14 @@ jobs:
           dry_run: true
 
       - name: Verify Cross Repo Output
+        env:
+          CONTRIBUTORS_COUNT: ${{ steps.cross-repo-test.outputs.contributors_count }}
+          TOP_CONTRIBUTOR: ${{ steps.cross-repo-test.outputs.top_contributor }}
         run: |
-          echo "contributors_count=${{ steps.cross-repo-test.outputs.contributors_count }}"
-          echo "top_contributor=${{ steps.cross-repo-test.outputs.top_contributor }}"
-          if [ -z "${{ steps.cross-repo-test.outputs.contributors_count }}" ]; then
+          set -euo pipefail
+          echo "contributors_count=$CONTRIBUTORS_COUNT"
+          echo "top_contributor=$TOP_CONTRIBUTOR"
+          if [ -z "$CONTRIBUTORS_COUNT" ]; then
             echo "FAIL: contributors_count is empty"
             exit 1
           fi
@@ -308,11 +348,14 @@ jobs:
       - test-action-section-update
       - test-action-cross-repo
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Check all jobs
+        env:
+          HAS_FAILURE: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
         run: |
-          if [ "${{ contains(needs.*.result, 'failure') }}" = "true" ] || \
-             [ "${{ contains(needs.*.result, 'cancelled') }}" = "true" ]; then
+          set -euo pipefail
+          if [ "$HAS_FAILURE" = "true" ]; then
             echo "[FAIL] Some jobs failed or were cancelled"
             exit 1
           fi

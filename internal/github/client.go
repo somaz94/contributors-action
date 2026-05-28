@@ -1,6 +1,7 @@
 package github
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,6 +12,7 @@ import (
 const (
 	apiBaseURL         = "https://api.github.com"
 	defaultHTTPTimeout = 30 * time.Second
+	perPage            = 100
 )
 
 // Client is a GitHub API client.
@@ -39,37 +41,16 @@ func NewClientWithBaseURL(token, baseURL string) *Client {
 }
 
 // FetchContributors fetches all contributors for the given repository.
-func (c *Client) FetchContributors(owner, repo string, includeBots bool) ([]Contributor, error) {
+// The context bounds the entire pagination loop.
+func (c *Client) FetchContributors(ctx context.Context, owner, repo string, includeBots bool) ([]Contributor, error) {
 	var allContributors []Contributor
 	page := 1
 
 	for {
-		url := fmt.Sprintf("%s/repos/%s/%s/contributors?per_page=100&page=%d", c.baseURL, owner, repo, page)
-		req, err := http.NewRequest("GET", url, nil)
+		url := fmt.Sprintf("%s/repos/%s/%s/contributors?per_page=%d&page=%d", c.baseURL, owner, repo, perPage, page)
+		contributors, err := c.fetchPage(ctx, url)
 		if err != nil {
-			return nil, fmt.Errorf("creating request: %w", err)
-		}
-
-		if c.token != "" {
-			req.Header.Set("Authorization", "Bearer "+c.token)
-		}
-		req.Header.Set("Accept", "application/vnd.github+json")
-		req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
-
-		resp, err := c.httpClient.Do(req)
-		if err != nil {
-			return nil, fmt.Errorf("fetching contributors: %w", err)
-		}
-		defer resp.Body.Close()
-
-		if resp.StatusCode != http.StatusOK {
-			body, _ := io.ReadAll(resp.Body)
-			return nil, fmt.Errorf("GitHub API returned %d: %s", resp.StatusCode, string(body))
-		}
-
-		var contributors []Contributor
-		if err := json.NewDecoder(resp.Body).Decode(&contributors); err != nil {
-			return nil, fmt.Errorf("decoding response: %w", err)
+			return nil, err
 		}
 
 		if len(contributors) == 0 {
@@ -78,7 +59,7 @@ func (c *Client) FetchContributors(owner, repo string, includeBots bool) ([]Cont
 
 		allContributors = append(allContributors, contributors...)
 
-		if len(contributors) < 100 {
+		if len(contributors) < perPage {
 			break
 		}
 		page++
@@ -89,4 +70,40 @@ func (c *Client) FetchContributors(owner, repo string, includeBots bool) ([]Cont
 	}
 
 	return allContributors, nil
+}
+
+// fetchPage fetches a single page. Body is drained and closed before return
+// to keep connection reuse healthy and avoid per-loop defer accumulation.
+func (c *Client) fetchPage(ctx context.Context, url string) ([]Contributor, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("creating request: %w", err)
+	}
+
+	if c.token != "" {
+		req.Header.Set("Authorization", "Bearer "+c.token)
+	}
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("fetching contributors: %w", err)
+	}
+	defer func() {
+		io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
+	}()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("GitHub API returned %d: %s", resp.StatusCode, string(body))
+	}
+
+	var contributors []Contributor
+	if err := json.NewDecoder(resp.Body).Decode(&contributors); err != nil {
+		return nil, fmt.Errorf("decoding response: %w", err)
+	}
+
+	return contributors, nil
 }

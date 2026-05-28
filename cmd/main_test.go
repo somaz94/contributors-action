@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -80,7 +81,7 @@ func TestExecuteDryRun(t *testing.T) {
 
 	os.Unsetenv("GITHUB_OUTPUT")
 
-	err := execute(cfg, client)
+	err := execute(context.Background(), cfg, client)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -112,7 +113,7 @@ func TestExecuteWriteFile(t *testing.T) {
 
 	os.Unsetenv("GITHUB_OUTPUT")
 
-	err = execute(cfg, client)
+	err = execute(context.Background(), cfg, client)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -149,7 +150,7 @@ func TestExecuteWithMaxContributors(t *testing.T) {
 
 	os.Unsetenv("GITHUB_OUTPUT")
 
-	err := execute(cfg, client)
+	err := execute(context.Background(), cfg, client)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -175,7 +176,7 @@ func TestExecuteWithExclude(t *testing.T) {
 
 	os.Unsetenv("GITHUB_OUTPUT")
 
-	err := execute(cfg, client)
+	err := execute(context.Background(), cfg, client)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -208,7 +209,7 @@ func TestExecuteWithGitHubOutput(t *testing.T) {
 		DryRun:     true,
 	}
 
-	err = execute(cfg, client)
+	err = execute(context.Background(), cfg, client)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -246,7 +247,7 @@ func TestExecuteFetchError(t *testing.T) {
 		DryRun:     true,
 	}
 
-	err := execute(cfg, client)
+	err := execute(context.Background(), cfg, client)
 	if err == nil {
 		t.Fatal("expected error for API failure")
 	}
@@ -274,7 +275,7 @@ func TestExecuteWriteError(t *testing.T) {
 
 	os.Unsetenv("GITHUB_OUTPUT")
 
-	err := execute(cfg, client)
+	err := execute(context.Background(), cfg, client)
 	if err == nil {
 		t.Fatal("expected error for write failure")
 	}
@@ -305,7 +306,7 @@ func TestExecuteEmptyContributors(t *testing.T) {
 
 	os.Unsetenv("GITHUB_OUTPUT")
 
-	err := execute(cfg, client)
+	err := execute(context.Background(), cfg, client)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -316,7 +317,7 @@ func TestRunConfigError(t *testing.T) {
 	os.Unsetenv("INPUT_OWNER")
 	os.Unsetenv("INPUT_REPO")
 
-	err := run()
+	err := run(context.Background())
 	if err == nil {
 		t.Fatal("expected error for missing config")
 	}

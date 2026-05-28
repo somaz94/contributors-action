@@ -1,6 +1,7 @@
 package github
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -25,7 +26,7 @@ func TestFetchContributors(t *testing.T) {
 
 	client := NewClientWithBaseURL("test-token", server.URL)
 
-	contributors, err := client.FetchContributors("owner", "repo", false)
+	contributors, err := client.FetchContributors(context.Background(), "owner", "repo", false)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -52,7 +53,7 @@ func TestFetchContributorsIncludeBots(t *testing.T) {
 
 	client := NewClientWithBaseURL("", server.URL)
 
-	contributors, err := client.FetchContributors("owner", "repo", true)
+	contributors, err := client.FetchContributors(context.Background(), "owner", "repo", true)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -71,7 +72,7 @@ func TestFetchContributorsAPIError(t *testing.T) {
 
 	client := NewClientWithBaseURL("token", server.URL)
 
-	_, err := client.FetchContributors("owner", "repo", false)
+	_, err := client.FetchContributors(context.Background(), "owner", "repo", false)
 	if err == nil {
 		t.Fatal("expected error for 404 response")
 	}
@@ -99,7 +100,7 @@ func TestFetchContributorsEmptyResponse(t *testing.T) {
 
 	client := NewClientWithBaseURL("", server.URL)
 
-	contributors, err := client.FetchContributors("owner", "repo", false)
+	contributors, err := client.FetchContributors(context.Background(), "owner", "repo", false)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -117,7 +118,7 @@ func TestFetchContributorsInvalidJSON(t *testing.T) {
 
 	client := NewClientWithBaseURL("", server.URL)
 
-	_, err := client.FetchContributors("owner", "repo", false)
+	_, err := client.FetchContributors(context.Background(), "owner", "repo", false)
 	if err == nil {
 		t.Fatal("expected error for invalid JSON")
 	}
@@ -135,7 +136,7 @@ func TestFetchContributorsNoToken(t *testing.T) {
 
 	client := NewClientWithBaseURL("", server.URL)
 
-	contributors, err := client.FetchContributors("owner", "repo", true)
+	contributors, err := client.FetchContributors(context.Background(), "owner", "repo", true)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -164,7 +165,7 @@ func TestFetchContributorsPagination(t *testing.T) {
 
 	client := NewClientWithBaseURL("", server.URL)
 
-	contributors, err := client.FetchContributors("owner", "repo", false)
+	contributors, err := client.FetchContributors(context.Background(), "owner", "repo", false)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/somaz94/contributors-action/internal/config"
 	"github.com/somaz94/contributors-action/internal/formatter"
@@ -11,37 +14,41 @@ import (
 	"github.com/somaz94/contributors-action/internal/writer"
 )
 
+// Output key names — must match action.yml outputs.
+const (
+	outputContributorsCount = "contributors_count"
+	outputOutputFile        = "output_file"
+	outputTopContributor    = "top_contributor"
+)
+
 func main() {
-	if err := run(); err != nil {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	if err := run(ctx); err != nil {
 		log.Fatal(err)
 	}
 }
 
 // run contains the main logic, extracted for testability.
-func run() error {
+func run(ctx context.Context) error {
 	cfg, err := config.Load()
 	if err != nil {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
 	client := github.NewClient(cfg.Token)
-	return execute(cfg, client)
+	return execute(ctx, cfg, client)
 }
 
 // execute runs the core logic with the given config and client.
-func execute(cfg *config.Config, client *github.Client) error {
-	contributors, err := client.FetchContributors(cfg.Owner, cfg.Repo, cfg.IncludeBots)
+func execute(ctx context.Context, cfg *config.Config, client *github.Client) error {
+	contributors, err := client.FetchContributors(ctx, cfg.Owner, cfg.Repo, cfg.IncludeBots)
 	if err != nil {
 		return fmt.Errorf("failed to fetch contributors: %w", err)
 	}
 
-	contributors = github.Filter(contributors, cfg.Exclude)
-	contributors = github.Sort(contributors, cfg.SortBy)
-
-	if cfg.MaxContributors > 0 && len(contributors) > cfg.MaxContributors {
-		contributors = contributors[:cfg.MaxContributors]
-	}
-
+	contributors = applyPipeline(contributors, cfg)
 	content := formatter.Format(contributors, cfg.Format, cfg.Columns, cfg.AvatarSize)
 
 	if cfg.DryRun {
@@ -58,12 +65,23 @@ func execute(cfg *config.Config, client *github.Client) error {
 		topContributor = contributors[0].Login
 	}
 
-	setOutput("contributors_count", fmt.Sprintf("%d", len(contributors)))
-	setOutput("output_file", cfg.OutputFile)
-	setOutput("top_contributor", topContributor)
+	setOutput(outputContributorsCount, fmt.Sprintf("%d", len(contributors)))
+	setOutput(outputOutputFile, cfg.OutputFile)
+	setOutput(outputTopContributor, topContributor)
 
 	fmt.Printf("Successfully processed %d contributors\n", len(contributors))
 	return nil
+}
+
+// applyPipeline runs the post-fetch transforms: exclude filter, sort, then
+// max-contributors truncation.
+func applyPipeline(contributors []github.Contributor, cfg *config.Config) []github.Contributor {
+	contributors = github.Filter(contributors, cfg.Exclude)
+	contributors = github.Sort(contributors, cfg.SortBy)
+	if cfg.MaxContributors > 0 && len(contributors) > cfg.MaxContributors {
+		contributors = contributors[:cfg.MaxContributors]
+	}
+	return contributors
 }
 
 func setOutput(name, value string) {

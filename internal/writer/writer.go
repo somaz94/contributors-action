@@ -8,12 +8,16 @@ import (
 	"github.com/somaz94/contributors-action/internal/config"
 )
 
+// outputFileMode is the permission bits used when writing/rewriting the
+// contributors output file.
+const outputFileMode os.FileMode = 0o644
+
 // Write writes the content to the output file, optionally updating a section.
 func Write(cfg *config.Config, content string) error {
 	if cfg.UpdateSection {
 		return updateSection(cfg.OutputFile, content, cfg.SectionStart, cfg.SectionEnd)
 	}
-	return os.WriteFile(cfg.OutputFile, []byte(content), 0o644)
+	return os.WriteFile(cfg.OutputFile, []byte(content), outputFileMode)
 }
 
 func updateSection(filePath, content, startMarker, endMarker string) error {
@@ -40,5 +44,5 @@ func updateSection(filePath, content, startMarker, endMarker string) error {
 	sb.WriteString(content)
 	sb.WriteString(original[endIdx:])
 
-	return os.WriteFile(filePath, []byte(sb.String()), 0o644)
+	return os.WriteFile(filePath, []byte(sb.String()), outputFileMode)
 }

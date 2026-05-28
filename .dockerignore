@@ -17,6 +17,10 @@ CODEOWNERS
 Makefile
 cliff.toml
 *.out
+vendor/
+bin/
+dist/
+contributors-action
 
 # IDE
 .idea
@@ -26,6 +30,10 @@ cliff.toml
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
 
 # Environment
 .env

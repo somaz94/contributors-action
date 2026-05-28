@@ -8,7 +8,7 @@ on:
       - completed
 
 permissions:
-  contents: write
+  contents: read
 
 # Serialize runs — CONTRIBUTORS.md is rewritten in full each time, so two
 # parallel runs would race and clobber each other. cancel-in-progress: true
@@ -21,6 +21,7 @@ jobs:
   update_contributors:
     name: Update Contributors
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
 
     steps:
@@ -30,7 +31,9 @@ jobs:
           fetch-depth: 0
 
       - name: Pull latest changes
-        run: git pull origin main
+        run: |
+          set -euo pipefail
+          git pull origin main
 
       - name: Generate Contributors
         uses: somaz94/contributors-action@v1

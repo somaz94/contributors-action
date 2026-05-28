@@ -28,19 +28,19 @@ type Config struct {
 func Load() (*Config, error) {
 	owner, repo := parseRepository()
 
-	columns, err := strconv.Atoi(getEnv("INPUT_COLUMNS", "6"))
+	columns, err := getEnvInt("INPUT_COLUMNS", "6")
 	if err != nil {
-		return nil, fmt.Errorf("invalid columns value: %w", err)
+		return nil, err
 	}
 
-	maxContributors, err := strconv.Atoi(getEnv("INPUT_MAX_CONTRIBUTORS", "0"))
+	maxContributors, err := getEnvInt("INPUT_MAX_CONTRIBUTORS", "0")
 	if err != nil {
-		return nil, fmt.Errorf("invalid max_contributors value: %w", err)
+		return nil, err
 	}
 
-	avatarSize, err := strconv.Atoi(getEnv("INPUT_AVATAR_SIZE", "100"))
+	avatarSize, err := getEnvInt("INPUT_AVATAR_SIZE", "100")
 	if err != nil {
-		return nil, fmt.Errorf("invalid avatar_size value: %w", err)
+		return nil, err
 	}
 
 	cfg := &Config{
@@ -105,6 +105,18 @@ func getEnv(key, fallback string) string {
 
 func getEnvBool(key string) bool {
 	return getEnv(key, "false") == "true"
+}
+
+// getEnvInt reads an INPUT_* env var and parses it as int. The error message
+// derives the field name from the key (e.g. INPUT_COLUMNS -> "columns") so
+// downstream error matching stays stable.
+func getEnvInt(key, fallback string) (int, error) {
+	n, err := strconv.Atoi(getEnv(key, fallback))
+	if err != nil {
+		field := strings.ToLower(strings.TrimPrefix(key, "INPUT_"))
+		return 0, fmt.Errorf("invalid %s value: %w", field, err)
+	}
+	return n, nil
 }
 
 func parseCSV(s string) []string {

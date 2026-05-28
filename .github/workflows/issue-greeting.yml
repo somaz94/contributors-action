@@ -13,6 +13,7 @@ concurrency:
 jobs:
   greeting:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       issues: write
 

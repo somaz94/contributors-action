@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - .github/workflows/*
+      - '.github/workflows/**'
   workflow_dispatch:
 
 # Mirror is a one-way push to GitLab — the only GitHub-side need is
@@ -25,6 +25,7 @@ concurrency:
 jobs:
   backup:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout GitHub Repository
         uses: actions/checkout@v6

@@ -13,12 +13,17 @@ on:
       - completed
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: use-action-smoke-test
+  cancel-in-progress: false
 
 jobs:
   smoke-test-dry-run:
     name: Smoke Test (Dry Run)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: >
       github.event_name == 'workflow_dispatch' ||
       github.event.workflow_run.conclusion == 'success'
@@ -35,11 +40,16 @@ jobs:
           dry_run: true
 
       - name: Verify Dry Run Output
+        env:
+          CONTRIBUTORS_COUNT: ${{ steps.contributors-dry-run.outputs.contributors_count }}
+          OUTPUT_FILE: ${{ steps.contributors-dry-run.outputs.output_file }}
+          TOP_CONTRIBUTOR: ${{ steps.contributors-dry-run.outputs.top_contributor }}
         run: |
-          echo "contributors_count=${{ steps.contributors-dry-run.outputs.contributors_count }}"
-          echo "output_file=${{ steps.contributors-dry-run.outputs.output_file }}"
-          echo "top_contributor=${{ steps.contributors-dry-run.outputs.top_contributor }}"
-          if [ -z "${{ steps.contributors-dry-run.outputs.contributors_count }}" ]; then
+          set -euo pipefail
+          echo "contributors_count=$CONTRIBUTORS_COUNT"
+          echo "output_file=$OUTPUT_FILE"
+          echo "top_contributor=$TOP_CONTRIBUTOR"
+          if [ -z "$CONTRIBUTORS_COUNT" ]; then
             echo "FAIL: contributors_count is empty"
             exit 1
           fi
@@ -48,6 +58,7 @@ jobs:
   smoke-test-table-format:
     name: Smoke Test (Table Format)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [smoke-test-dry-run]
     steps:
       - name: Checkout
@@ -64,6 +75,7 @@ jobs:
 
       - name: Verify Table Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-TABLE.md" ]; then
             echo "FAIL: CONTRIBUTORS-TABLE.md not found"
             exit 1
@@ -78,6 +90,7 @@ jobs:
   smoke-test-list-format:
     name: Smoke Test (List Format)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [smoke-test-dry-run]
     steps:
       - name: Checkout
@@ -94,6 +107,7 @@ jobs:
 
       - name: Verify List Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-LIST.md" ]; then
             echo "FAIL: CONTRIBUTORS-LIST.md not found"
             exit 1
@@ -108,6 +122,7 @@ jobs:
   smoke-test-image-format:
     name: Smoke Test (Image Format)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [smoke-test-dry-run]
     steps:
       - name: Checkout
@@ -124,6 +139,7 @@ jobs:
 
       - name: Verify Image Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-IMAGE.md" ]; then
             echo "FAIL: CONTRIBUTORS-IMAGE.md not found"
             exit 1
@@ -138,6 +154,7 @@ jobs:
   smoke-test-exclude-and-sort:
     name: Smoke Test (Exclude and Sort)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [smoke-test-table-format]
     steps:
       - name: Checkout
@@ -156,6 +173,7 @@ jobs:
 
       - name: Verify Filtered Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-FILTERED.md" ]; then
             echo "FAIL: CONTRIBUTORS-FILTERED.md not found"
             exit 1
@@ -170,6 +188,7 @@ jobs:
   smoke-test-section-update:
     name: Smoke Test (Section Update)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [smoke-test-table-format]
     steps:
       - name: Checkout
@@ -177,6 +196,7 @@ jobs:
 
       - name: Create test file with markers
         run: |
+          set -euo pipefail
           cat > TEST-README.md <<'EOF'
           # My Project
 
@@ -203,6 +223,7 @@ jobs:
 
       - name: Verify Section Update
         run: |
+          set -euo pipefail
           if ! grep -q "<!-- CONTRIBUTORS-START -->" TEST-README.md; then
             echo "FAIL: start marker missing"
             exit 1
@@ -225,6 +246,7 @@ jobs:
   smoke-test-cross-repo:
     name: Smoke Test (Cross Repository)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [smoke-test-list-format, smoke-test-image-format]
     steps:
       - name: Checkout
@@ -242,14 +264,18 @@ jobs:
           columns: 6
 
       - name: Verify Cross Repo Output
+        env:
+          CONTRIBUTORS_COUNT: ${{ steps.contributors-cross.outputs.contributors_count }}
+          TOP_CONTRIBUTOR: ${{ steps.contributors-cross.outputs.top_contributor }}
         run: |
-          echo "contributors_count=${{ steps.contributors-cross.outputs.contributors_count }}"
-          echo "top_contributor=${{ steps.contributors-cross.outputs.top_contributor }}"
+          set -euo pipefail
+          echo "contributors_count=$CONTRIBUTORS_COUNT"
+          echo "top_contributor=$TOP_CONTRIBUTOR"
           if [ ! -f "CONTRIBUTORS-CROSS.md" ]; then
             echo "FAIL: CONTRIBUTORS-CROSS.md not found"
             exit 1
           fi
-          if [ -z "${{ steps.contributors-cross.outputs.contributors_count }}" ]; then
+          if [ -z "$CONTRIBUTORS_COUNT" ]; then
             echo "FAIL: contributors_count is empty"
             exit 1
           fi
@@ -259,6 +285,7 @@ jobs:
   smoke-test-custom-options:
     name: Smoke Test (Custom Options)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [smoke-test-exclude-and-sort, smoke-test-section-update]
     steps:
       - name: Checkout
@@ -280,6 +307,7 @@ jobs:
 
       - name: Verify Custom Output
         run: |
+          set -euo pipefail
           if [ ! -f "CONTRIBUTORS-CUSTOM.md" ]; then
             echo "FAIL: CONTRIBUTORS-CUSTOM.md not found"
             exit 1
