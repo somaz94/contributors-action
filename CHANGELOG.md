@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased (2026-06-04)
+
+### Chores
+
+- **deps:** bump golang from `91eda97` to `f23e8b2` ([66a2b8a](https://github.com/somaz94/contributors-action/commit/66a2b8a63fac2e0b4f198ebbbf19472b23cbc1e3))
+
+<br/>
+
 ## [v1.1.1](https://github.com/somaz94/contributors-action/compare/v1.1.0...v1.1.1) (2026-05-28)
 
 ### Code Refactoring
