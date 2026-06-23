@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (2026-06-16)
+## Unreleased (2026-06-23)
 
 ### Continuous Integration
 
@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 
 ### Chores
 
+- **deps:** bump actions/checkout from 6 to 7 (#10) ([#10](https://github.com/somaz94/contributors-action/pull/10)) ([883a3a2](https://github.com/somaz94/contributors-action/commit/883a3a2f99576d68186b91dbc472cf0320bdca26))
+- **deps:** bump alpine from `f5064d3` to `28bd5fe` (#8) ([#8](https://github.com/somaz94/contributors-action/pull/8)) ([0045e83](https://github.com/somaz94/contributors-action/commit/0045e83b458b0c9992f37aeba93b4065ec209e47))
 - **deps:** bump golang from `f23e8b2` to `f1ddd9f` ([6ee4c24](https://github.com/somaz94/contributors-action/commit/6ee4c24bf039c468e91ebec3797c4239a4435e57))
 - **deps:** bump alpine from 3.23 to 3.24 in the docker-minor group (#6) ([#6](https://github.com/somaz94/contributors-action/pull/6)) ([cbc5c81](https://github.com/somaz94/contributors-action/commit/cbc5c81c8133103752c8399b24e3d435558e32fa))
 - **deps:** bump golang from `91eda97` to `f23e8b2` ([66a2b8a](https://github.com/somaz94/contributors-action/commit/66a2b8a63fac2e0b4f198ebbbf19472b23cbc1e3))
