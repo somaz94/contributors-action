@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (2026-06-24)
+## [v1.1.2](https://github.com/somaz94/contributors-action/compare/v1.1.1...v1.1.2) (2026-06-24)
+
+### Documentation
+
+- front-load output formats in README and action.yml description ([11bedeb](https://github.com/somaz94/contributors-action/commit/11bedebb8a6ae8b12667f97947289713e1c37c96))
 
 ### Continuous Integration
 
