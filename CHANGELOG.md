@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (2026-06-23)
+## Unreleased (2026-06-24)
 
 ### Continuous Integration
 
@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Chores
 
+- **deps:** bump golang from `f1ddd9f` to `3ad5730` (#9) ([#9](https://github.com/somaz94/contributors-action/pull/9)) ([523aa5e](https://github.com/somaz94/contributors-action/commit/523aa5e7bf4cf01dbdf0df920307975ead25479f))
 - **deps:** bump actions/checkout from 6 to 7 (#10) ([#10](https://github.com/somaz94/contributors-action/pull/10)) ([883a3a2](https://github.com/somaz94/contributors-action/commit/883a3a2f99576d68186b91dbc472cf0320bdca26))
 - **deps:** bump alpine from `f5064d3` to `28bd5fe` (#8) ([#8](https://github.com/somaz94/contributors-action/pull/8)) ([0045e83](https://github.com/somaz94/contributors-action/commit/0045e83b458b0c9992f37aeba93b4065ec209e47))
 - **deps:** bump golang from `f23e8b2` to `f1ddd9f` ([6ee4c24](https://github.com/somaz94/contributors-action/commit/6ee4c24bf039c468e91ebec3797c4239a4435e57))
