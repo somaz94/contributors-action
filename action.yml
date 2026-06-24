@@ -1,5 +1,5 @@
 name: Contributors Generator Action
-description: Generate and update contributors list from GitHub repository data
+description: Generate and auto-update a GitHub contributors list in table, list, or image-grid format
 author: somaz94
 
 branding:

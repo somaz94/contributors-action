@@ -6,7 +6,7 @@
 [![Top Language](https://img.shields.io/github/languages/top/somaz94/contributors-action)](https://github.com/somaz94/contributors-action)
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Contributors%20Action-blue?logo=github)](https://github.com/marketplace/actions/contributors-action)
 
-A GitHub Action that generates and updates a contributors list from GitHub repository data.
+A GitHub Action that generates and auto-updates a contributors list from GitHub repository data — in table, list, or image-grid format, with marker-based section updates.
 
 <br/>
 
