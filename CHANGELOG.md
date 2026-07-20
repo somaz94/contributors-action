@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased (2026-07-20)
+
+### Continuous Integration
+
+- remove DCO workflow ([3586d7b](https://github.com/somaz94/contributors-action/commit/3586d7bc3dac97048ef8067298531f041d145741))
+- adopt semantic-pr, labels, lock-threads, PR size, and auto-assign reusables ([8237c61](https://github.com/somaz94/contributors-action/commit/8237c61808cb814fef2165f8b08828648b06bf55))
+- use reusable stale-issues workflow ([dbfc850](https://github.com/somaz94/contributors-action/commit/dbfc850fe043b60e8ba0f6d107b1b569789c11c6))
+- use reusable issue-greeting workflow ([cc2fd4e](https://github.com/somaz94/contributors-action/commit/cc2fd4e1adbbedd7cf24a394ee70cf594b1d18f0))
+- use reusable dependabot-auto-merge workflow ([e504e39](https://github.com/somaz94/contributors-action/commit/e504e39feb1964f8d591b4fe3b7b56e9c1b69f47))
+- use reusable contributors workflow ([18e051a](https://github.com/somaz94/contributors-action/commit/18e051a7ffeb35448e1ce89b2670dd3cf7d61f08))
+- add ok-to-test workflow stub ([d65d205](https://github.com/somaz94/contributors-action/commit/d65d205e31d02b00daa1ca7491618935dd346773))
+- add PR welcome workflow stub ([bfc1201](https://github.com/somaz94/contributors-action/commit/bfc1201f42d5a6fe0409ecba243e9b793c408a5f))
+
+### Chores
+
+- **deps:** bump golang from `3ad5730` to `0178a64` (#11) ([#11](https://github.com/somaz94/contributors-action/pull/11)) ([5557c4a](https://github.com/somaz94/contributors-action/commit/5557c4a97ec4114b50cac1c229c8abdf927353ab))
+
+### Contributors
+
+- somaz
+
+<br/>
+
 ## [v1.1.2](https://github.com/somaz94/contributors-action/compare/v1.1.1...v1.1.2) (2026-06-24)
 
 ### Documentation
