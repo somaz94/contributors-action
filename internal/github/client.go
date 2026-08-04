@@ -91,8 +91,10 @@ func (c *Client) fetchPage(ctx context.Context, url string) ([]Contributor, erro
 		return nil, fmt.Errorf("fetching contributors: %w", err)
 	}
 	defer func() {
-		io.Copy(io.Discard, resp.Body)
-		resp.Body.Close()
+		// Drain and close so the connection can be reused; neither failure is
+		// actionable once the response has been read.
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
 	}()
 
 	if resp.StatusCode != http.StatusOK {

@@ -95,6 +95,7 @@ func setOutput(name, value string) {
 		log.Printf("warning: could not write to GITHUB_OUTPUT: %v", err)
 		return
 	}
-	defer f.Close()
+	// os.File writes are unbuffered, so Close carries no pending data.
+	defer func() { _ = f.Close() }()
 	fmt.Fprintf(f, "%s=%s\n", name, value)
 }
