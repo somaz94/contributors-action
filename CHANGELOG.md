@@ -2,10 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (2026-07-20)
+## Unreleased (2026-08-07)
+
+### Performance Improvements
+
+- ship a prebuilt multi-arch image instead of building per run ([09b487e](https://github.com/somaz94/contributors-action/commit/09b487e294a0eebef61dbf0ca3a6415e3e60ea81))
 
 ### Continuous Integration
 
+- add a golangci-lint config scoped to defect-finding linters ([cdefed2](https://github.com/somaz94/contributors-action/commit/cdefed2c5a29f95126f0df30c91e0734ffab7a94))
 - remove DCO workflow ([3586d7b](https://github.com/somaz94/contributors-action/commit/3586d7bc3dac97048ef8067298531f041d145741))
 - adopt semantic-pr, labels, lock-threads, PR size, and auto-assign reusables ([8237c61](https://github.com/somaz94/contributors-action/commit/8237c61808cb814fef2165f8b08828648b06bf55))
 - use reusable stale-issues workflow ([dbfc850](https://github.com/somaz94/contributors-action/commit/dbfc850fe043b60e8ba0f6d107b1b569789c11c6))
