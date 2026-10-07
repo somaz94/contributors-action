@@ -2,16 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (2026-09-08)
+## Unreleased (2026-10-07)
 
 ### Continuous Integration
 
+- correct stale image-seeding comments ([e412c7e](https://github.com/somaz94/contributors-action/commit/e412c7e2f7f7bf78924910418d6408b797d84359))
+- trim redundant comments in gitlab-mirror workflow ([53a90ee](https://github.com/somaz94/contributors-action/commit/53a90eea94173ee906154f0be95fde10133b8416))
+- correct the image-seeding comment in the release workflow ([ab0cb6d](https://github.com/somaz94/contributors-action/commit/ab0cb6d40ee6bc41679898ed58f3081e228763b2))
 - retry mirror pushes on transient remote failures ([5e49b27](https://github.com/somaz94/contributors-action/commit/5e49b277ca45a0f402826bf67f4dca074e124e64))
 - drop the dead issue-close trigger from changelog generation ([d026dad](https://github.com/somaz94/contributors-action/commit/d026dad7a5ac7af3dad671f8e158f42509cc23bb))
 - skip release-triggered runs on the image-seeding dispatch ([479ca4c](https://github.com/somaz94/contributors-action/commit/479ca4c220a714996a323de75ce10edba23dfce4))
 
 ### Chores
 
+- **deps:** bump golang from `cf6fca6` to `8a5910f` (#16) ([#16](https://github.com/somaz94/contributors-action/pull/16)) ([27daf3e](https://github.com/somaz94/contributors-action/commit/27daf3e8d0e63257d84b3994759ff7ea83445f4d))
+- tighten golangci-lint config comments ([8fd9d1d](https://github.com/somaz94/contributors-action/commit/8fd9d1d9a1d73a196ef323fe9efd9ed7f368a15e))
+- **deps:** bump alpine from `28bd5fe` to `294b683` (#15) ([#15](https://github.com/somaz94/contributors-action/pull/15)) ([fea42ba](https://github.com/somaz94/contributors-action/commit/fea42ba29ee90a0b55a793d4c1d4657755be3c41))
 - **deps:** bump golang from `4c9fe60` to `cf6fca6` ([6274c59](https://github.com/somaz94/contributors-action/commit/6274c591e0430595b37a37e30af27ccd63f96967))
 - **deps:** bump golang in the docker-minor group (#13) ([#13](https://github.com/somaz94/contributors-action/pull/13)) ([2c949fb](https://github.com/somaz94/contributors-action/commit/2c949fb6ff038eab0b2bd20c0b7b525377b87a7d))
 - **deps:** bump golang from `0178a64` to `3889b42` ([0f2e3a7](https://github.com/somaz94/contributors-action/commit/0f2e3a72a4f3c4df7f69fd1cd2e0d2817d2257fa))
