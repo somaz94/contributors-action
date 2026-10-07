@@ -45,6 +45,6 @@ Key inputs: `token`, `output_file`, `format` (table/list/image), `columns`, `max
 ## CI
 
 - `ci.yml` — Unit tests (80% coverage threshold), Docker build, 6 integration tests
-- Docker: multi-stage build (golang:1.26-alpine → alpine:3.23)
+- Docker: multi-stage build (golang alpine builder → alpine runtime; image versions are pinned in `Dockerfile`)
 
 <br/>
