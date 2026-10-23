@@ -2,10 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (2026-10-07)
+## Unreleased (2026-10-23)
+
+### Builds
+
+- raise go.mod to Go 1.27 to match the build image ([0534d9b](https://github.com/somaz94/contributors-action/commit/0534d9b06c3189aaa86cbc97cebb4b1bb42655c3))
 
 ### Continuous Integration
 
+- deduplicate identical commit lines in release notes ([c201490](https://github.com/somaz94/contributors-action/commit/c20149031d1f5c9ac3a023e8e9cbe7ed406f440f))
 - correct stale image-seeding comments ([e412c7e](https://github.com/somaz94/contributors-action/commit/e412c7e2f7f7bf78924910418d6408b797d84359))
 - trim redundant comments in gitlab-mirror workflow ([53a90ee](https://github.com/somaz94/contributors-action/commit/53a90eea94173ee906154f0be95fde10133b8416))
 - correct the image-seeding comment in the release workflow ([ab0cb6d](https://github.com/somaz94/contributors-action/commit/ab0cb6d40ee6bc41679898ed58f3081e228763b2))
@@ -15,6 +20,8 @@ All notable changes to this project will be documented in this file.
 
 ### Chores
 
+- **deps:** bump golang from `8a5910f` to `f92b6ef` (#17) ([#17](https://github.com/somaz94/contributors-action/pull/17)) ([7f42657](https://github.com/somaz94/contributors-action/commit/7f426576e948048f84fcef9b38786db72023fc98))
+- correct the TARGETARCH comment in the Dockerfile ([a0d703e](https://github.com/somaz94/contributors-action/commit/a0d703e6b00bfec58328c7657b4e3bb6eb025f50))
 - **deps:** bump golang from `cf6fca6` to `8a5910f` (#16) ([#16](https://github.com/somaz94/contributors-action/pull/16)) ([27daf3e](https://github.com/somaz94/contributors-action/commit/27daf3e8d0e63257d84b3994759ff7ea83445f4d))
 - tighten golangci-lint config comments ([8fd9d1d](https://github.com/somaz94/contributors-action/commit/8fd9d1d9a1d73a196ef323fe9efd9ed7f368a15e))
 - **deps:** bump alpine from `28bd5fe` to `294b683` (#15) ([#15](https://github.com/somaz94/contributors-action/pull/15)) ([fea42ba](https://github.com/somaz94/contributors-action/commit/fea42ba29ee90a0b55a793d4c1d4657755be3c41))
