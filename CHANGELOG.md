@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (2026-10-23)
+## Unreleased (2026-11-04)
 
 ### Builds
 
@@ -20,6 +20,8 @@ All notable changes to this project will be documented in this file.
 
 ### Chores
 
+- **deps:** bump golang from `f92b6ef` to `d200d2d` (#19) ([#19](https://github.com/somaz94/contributors-action/pull/19)) ([8acab3b](https://github.com/somaz94/contributors-action/commit/8acab3bc23239a9c379571911c4ddc100aee0a45))
+- **deps:** bump alpine from `294b683` to `be26560` (#18) ([#18](https://github.com/somaz94/contributors-action/pull/18)) ([71ad027](https://github.com/somaz94/contributors-action/commit/71ad0271533364cbb05aa8c2cc41ddb2c787a67b))
 - **deps:** bump golang from `8a5910f` to `f92b6ef` (#17) ([#17](https://github.com/somaz94/contributors-action/pull/17)) ([7f42657](https://github.com/somaz94/contributors-action/commit/7f426576e948048f84fcef9b38786db72023fc98))
 - correct the TARGETARCH comment in the Dockerfile ([a0d703e](https://github.com/somaz94/contributors-action/commit/a0d703e6b00bfec58328c7657b4e3bb6eb025f50))
 - **deps:** bump golang from `cf6fca6` to `8a5910f` (#16) ([#16](https://github.com/somaz94/contributors-action/pull/16)) ([27daf3e](https://github.com/somaz94/contributors-action/commit/27daf3e8d0e63257d84b3994759ff7ea83445f4d))
