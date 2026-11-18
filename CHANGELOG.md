@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (2026-11-04)
+## Unreleased (2026-11-18)
 
 ### Builds
 
@@ -20,6 +20,8 @@ All notable changes to this project will be documented in this file.
 
 ### Chores
 
+- **deps:** bump golang from `d200d2d` to `fa3d596` (#20) ([#20](https://github.com/somaz94/contributors-action/pull/20)) ([6e2f17a](https://github.com/somaz94/contributors-action/commit/6e2f17a2d996e80360cffa7cfb493b7cfcc88d45))
+- **deps:** bump alpine from `be26560` to `f59abe6` (#21) ([#21](https://github.com/somaz94/contributors-action/pull/21)) ([4670c22](https://github.com/somaz94/contributors-action/commit/4670c22e3e1b15d914a29c4d0b5209b6623038d4))
 - **deps:** bump golang from `f92b6ef` to `d200d2d` (#19) ([#19](https://github.com/somaz94/contributors-action/pull/19)) ([8acab3b](https://github.com/somaz94/contributors-action/commit/8acab3bc23239a9c379571911c4ddc100aee0a45))
 - **deps:** bump alpine from `294b683` to `be26560` (#18) ([#18](https://github.com/somaz94/contributors-action/pull/18)) ([71ad027](https://github.com/somaz94/contributors-action/commit/71ad0271533364cbb05aa8c2cc41ddb2c787a67b))
 - **deps:** bump golang from `8a5910f` to `f92b6ef` (#17) ([#17](https://github.com/somaz94/contributors-action/pull/17)) ([7f42657](https://github.com/somaz94/contributors-action/commit/7f426576e948048f84fcef9b38786db72023fc98))
